@@ -1,10 +1,10 @@
 {
-  "date_analyse": "2025-07-02 11:56",
+  "date_analyse": "2025-07-02 12:00",
   "lieu": "Paris",
   "donnees_brutes": {
     "latitude": 48.84,
     "longitude": 2.3599997,
-    "generationtime_ms": 0.09059906005859375,
+    "generationtime_ms": 0.07891654968261719,
     "utc_offset_seconds": 7200,
     "timezone": "Europe/Paris",
     "timezone_abbreviation": "GMT+2",

@@ -8,6 +8,7 @@ import requests
 import statistics
 import json
 from datetime import datetime
+import matplotlib.pyplot as plt
 
 PARIS_LAT = 48.85
 PARIS_LON = 2.35
@@ -57,6 +58,27 @@ def save_results(weather_data, analysis):
     
     with open("meteo.json", "w", encoding="utf-8") as f:
         json.dump(results, f, indent=2, ensure_ascii=False)
+
+def create_graph(dates, max_temps, min_temps):
+    plt.figure(figsize=(10, 6))
+    
+    dates_obj = [datetime.fromisoformat(date) for date in dates]
+    
+    plt.plot(dates_obj, max_temps, 'r-o', label='Temperature max', linewidth=2)
+    plt.plot(dates_obj, min_temps, 'b-o', label='Temperature min', linewidth=2)
+    
+    plt.fill_between(dates_obj, min_temps, max_temps, alpha=0.3, color='lightgray')
+    
+    plt.title('Previsions meteo Paris - 7 jours')
+    plt.xlabel('Date')
+    plt.ylabel('Temperature (°C)')
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    
+    plt.savefig('temperatures.png', dpi=150)
+    plt.show()
     
 def run_tests():    
     test_max = [20, 22, 18, 25, 21, 19, 23]
@@ -92,6 +114,8 @@ def main():
         analysis["precipitation_totale"] = round(sum(precipitations), 1)
         
         save_results(raw_data, analysis)
+
+        create_graph(dates, max_temps, min_temps)
         
         print(f"{raw_data} \n")
         print(f"{analysis}\n")
