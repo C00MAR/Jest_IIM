@@ -58,8 +58,26 @@ def save_results(weather_data, analysis):
     with open("meteo.json", "w", encoding="utf-8") as f:
         json.dump(results, f, indent=2, ensure_ascii=False)
     
+def run_tests():    
+    test_max = [20, 22, 18, 25, 21, 19, 23]
+    test_min = [12, 14, 10, 17, 13, 11, 15]
+    
+    analysis = analyze_temperatures(test_max, test_min)
+    assert analysis["temperature_moyenne_max"] == 21.1
+    assert analysis["temperature_max_absolue"] == 25
+    print("Test analyse: OK")
+    
+    try:
+        data = get_weather_data()
+        assert "daily" in data
+        print("Test API: OK")
+    except:
+        print("Test API: ECHEC (verifiez votre connexion)")
+    
 def main():
     print("Analyse meteo Paris\n")
+
+    run_tests()
         
     try:
         raw_data = get_weather_data()
