@@ -6,8 +6,9 @@ Version condensée avec tout dans un fichier
 
 import requests
 import statistics
+import json
+from datetime import datetime
 
-# Configuration
 PARIS_LAT = 48.85
 PARIS_LON = 2.35
 API_URL = "https://api.open-meteo.com/v1/forecast"
@@ -46,7 +47,17 @@ def analyze_temperatures(max_temps, min_temps):
     
     return analysis
 
-
+def save_results(weather_data, analysis):
+    results = {
+        "date_analyse": datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "lieu": "Paris",
+        "donnees_brutes": weather_data,
+        "analyse": analysis
+    }
+    
+    with open("meteo.json", "w", encoding="utf-8") as f:
+        json.dump(results, f, indent=2, ensure_ascii=False)
+    
 def main():
     print("Analyse meteo Paris\n")
         
@@ -61,6 +72,8 @@ def main():
 
         analysis = analyze_temperatures(max_temps, min_temps)
         analysis["precipitation_totale"] = round(sum(precipitations), 1)
+        
+        save_results(raw_data, analysis)
         
         print(f"{raw_data} \n")
         print(f"{analysis}\n")
