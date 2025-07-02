@@ -5,6 +5,7 @@ Version condensée avec tout dans un fichier
 """
 
 import requests
+import statistics
 
 # Configuration
 PARIS_LAT = 48.85
@@ -26,13 +27,43 @@ def get_weather_data():
     
     return response.json()
 
+
+def analyze_temperatures(max_temps, min_temps):
+    analysis = {
+        "temperature_moyenne_max": round(statistics.mean(max_temps), 1),
+        "temperature_moyenne_min": round(statistics.mean(min_temps), 1),
+        "temperature_max_absolue": max(max_temps),
+        "temperature_min_absolue": min(min_temps),
+        "amplitude_moyenne": round(statistics.mean([max_temps[i] - min_temps[i] for i in range(len(max_temps))]), 1)
+    }
+    
+    if max_temps[-1] > max_temps[0]:
+        analysis["tendance"] = "temperatures en hausse"
+    elif max_temps[-1] < max_temps[0]:
+        analysis["tendance"] = "temperatures en baisse"  
+    else:
+        analysis["tendance"] = "temperatures stables"
+    
+    return analysis
+
+
 def main():
-    print("Analyse meteo Paris")
+    print("Analyse meteo Paris\n")
         
     try:
         raw_data = get_weather_data()
+
+        daily = raw_data["daily"]
+        dates = daily["time"]
+        max_temps = daily["temperature_2m_max"]
+        min_temps = daily["temperature_2m_min"]
+        precipitations = daily["precipitation_sum"]
+
+        analysis = analyze_temperatures(max_temps, min_temps)
+        analysis["precipitation_totale"] = round(sum(precipitations), 1)
         
-        print(raw_data)
+        print(f"{raw_data} \n")
+        print(f"{analysis}\n")
         
     except Exception as e:
         print(f"Erreur: {e}")
